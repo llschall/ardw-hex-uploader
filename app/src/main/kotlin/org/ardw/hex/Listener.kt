@@ -10,13 +10,9 @@ class Listener : KeyListener {
     }
 
     override fun keyPressed(e: KeyEvent) {
-
-        println(e)
-
         if (KeyEvent.VK_ESCAPE.toChar() == e.keyChar) {
             exitProcess(0)
         }
-
     }
 
     override fun keyReleased(e: KeyEvent) {
