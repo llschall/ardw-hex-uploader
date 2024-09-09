@@ -32,26 +32,27 @@ class Panel : JPanel() {
 
         val listBtn = JButton("list")
 
-        val focus = FocusMonitor()
+        val focus = FocusMonitor(this)
 
         listBtn.addActionListener {
             listPorts()
             table.revalidate()
-            focus.button.requestFocus()
+            requestFocus()
         }
 
         add(JLabel("Current path is " + here.toAbsolutePath()), BorderLayout.NORTH)
         add(JScrollPane(table), BorderLayout.CENTER)
         add(listBtn, BorderLayout.SOUTH)
-        add(focus.button, BorderLayout.WEST)
 
-        focus.button.addKeyListener(Listener {
+        FocusMonitor(this)
+
+        addKeyListener(Listener {
             listPorts()
             table.revalidate()
-            focus.button.requestFocus()
+            requestFocus()
         })
 
-        focus.button.requestFocus()
+        requestFocus()
     }
 
     private fun listPorts() {
@@ -77,25 +78,21 @@ class Panel : JPanel() {
 
 }
 
-class FocusMonitor : FocusListener {
-
-    val button = JButton("Focus")
+class FocusMonitor(val panel: JPanel) : FocusListener {
 
     init {
-        button.isFocusable = true
-        button.isOpaque = true
-        button.background = Color.WHITE
-        button.addFocusListener(this)
+        panel.isFocusable = true
+        panel.addFocusListener(this)
     }
 
 
     override fun focusGained(e: FocusEvent?) {
-        button.background = Color.WHITE
-        button.revalidate()
+        panel.border = BorderFactory.createLineBorder(Color.BLUE, 4)
+        panel.revalidate()
     }
 
     override fun focusLost(e: FocusEvent?) {
-        button.background = Color.DARK_GRAY
-        button.revalidate()
+        panel.border = BorderFactory.createLineBorder(Color.BLACK, 4)
+        panel.revalidate()
     }
 }
