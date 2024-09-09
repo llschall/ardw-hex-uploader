@@ -2,7 +2,6 @@ package org.ardw.hex
 
 import org.llschall.ardwloop.serial.ArdwPortSelector
 import java.awt.BorderLayout
-import java.io.StringWriter
 import java.nio.file.Paths
 import javax.swing.*
 
@@ -13,21 +12,20 @@ class Window : JFrame() {
         title = "Ardwloop Hex Updater"
         pack()
         defaultCloseOperation = EXIT_ON_CLOSE
-        isVisible = true;
+        isVisible = true
         addKeyListener(Listener())
     }
 }
 
 class Panel : JPanel() {
 
-    val portMdl = PortModel()
-
     init {
         layout = BorderLayout()
         val here = Paths.get("")
 
+        val portMdl = PortModel()
         val table = JTable(portMdl)
-        table.autoCreateRowSorter = true
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 
         val listBtn = JButton("list")
 

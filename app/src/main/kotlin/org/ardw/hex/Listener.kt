@@ -25,13 +25,11 @@ class Listener : KeyListener {
 
 class PortModel : TableModel {
 
-    private val columns = listOf("Name", "Description", "System", "Selectable");
+    private val columns = listOf("Name", "Description", "System", "Selectable")
     val values = LinkedList<ArrayList<String>>()
 
     override fun getRowCount(): Int {
-        val size = values.size
-        println(size)
-        return size
+        return values.size
     }
 
     override fun getColumnCount(): Int {
@@ -43,7 +41,7 @@ class PortModel : TableModel {
     }
 
     override fun getColumnClass(columnIndex: Int): Class<*> {
-        return String::class.java;
+        return String::class.java
     }
 
     override fun isCellEditable(rowIndex: Int, columnIndex: Int): Boolean {
