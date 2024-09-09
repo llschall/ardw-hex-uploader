@@ -1,13 +1,10 @@
 package org.ardw.hex
 
 import org.llschall.ardwloop.serial.ArdwPortSelector
-import java.awt.GridLayout
+import java.awt.BorderLayout
 import java.io.StringWriter
 import java.nio.file.Paths
-import javax.swing.JButton
-import javax.swing.JFrame
-import javax.swing.JLabel
-import javax.swing.JPanel
+import javax.swing.*
 
 class Window : JFrame() {
 
@@ -23,54 +20,41 @@ class Window : JFrame() {
 
 class Panel : JPanel() {
 
-    val portLbl0: JLabel
-    val portLbl1: JLabel
-    val portLbl2: JLabel
-    val portLbl3: JLabel
+    val portMdl = PortModel()
 
     init {
-        layout = GridLayout(0, 1)
+        layout = BorderLayout()
         val here = Paths.get("")
-        add(JLabel("Current path is " + here.toAbsolutePath()))
-        portLbl0 = JLabel()
-        portLbl1 = JLabel()
-        portLbl2 = JLabel()
-        portLbl3 = JLabel()
+
+        val table = JTable(portMdl)
+        table.autoCreateRowSorter = true
 
         val listBtn = JButton("list")
 
         listBtn.addActionListener {
-            val writer0 = StringWriter()
-            val writer1 = StringWriter()
-            val writer2 = StringWriter()
-            val writer3 = StringWriter()
             val selector = ArdwPortSelector()
+
+            portMdl.values.clear()
+
             for (descriptor in selector.list()) {
-                writer0.append(descriptor.name)
-                writer0.append(';')
-                writer1.append(descriptor.systemName)
-                writer1.append(';')
-                writer2.append(descriptor.description)
-                writer2.append(';')
+
+                val list = ArrayList<String>()
+                list.add(descriptor.name)
+                list.add(descriptor.description)
+                list.add(descriptor.systemName)
 
                 if (selector.select(descriptor)) {
-                    writer3.append("S")
+                    list.add("S")
                 } else {
-                    writer3.append("-")
+                    list.add("-")
                 }
-                writer3.append(";")
+                portMdl.values.add(list)
             }
-
-            portLbl0.text = writer0.toString()
-            portLbl1.text = writer1.toString()
-            portLbl2.text = writer2.toString()
-            portLbl3.text = writer3.toString()
+            table.revalidate()
         }
 
-        add(portLbl0)
-        add(portLbl1)
-        add(portLbl2)
-        add(portLbl3)
-        add(listBtn)
+        add(JLabel("Current path is " + here.toAbsolutePath()), BorderLayout.NORTH)
+        add(JScrollPane(table), BorderLayout.CENTER)
+        add(listBtn, BorderLayout.SOUTH)
     }
 }
