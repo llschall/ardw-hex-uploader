@@ -7,7 +7,8 @@ import javax.swing.event.TableModelListener
 import javax.swing.table.TableModel
 import kotlin.system.exitProcess
 
-class Listener : KeyListener {
+class Listener(val space: () -> Unit) : KeyListener {
+
     override fun keyTyped(e: KeyEvent) {
         // do nothing
     }
@@ -15,6 +16,9 @@ class Listener : KeyListener {
     override fun keyPressed(e: KeyEvent) {
         if (KeyEvent.VK_ESCAPE.toChar() == e.keyChar) {
             exitProcess(0)
+        }
+        if (KeyEvent.VK_SPACE.toChar() == e.keyChar) {
+            space()
         }
     }
 

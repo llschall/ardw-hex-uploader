@@ -21,39 +21,23 @@ class Window : JFrame() {
 
 class Panel : JPanel() {
 
+    val portMdl = PortModel()
+
     init {
         layout = BorderLayout()
         val here = Paths.get("")
 
-        val portMdl = PortModel()
         val table = JTable(portMdl)
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 
         val listBtn = JButton("list")
 
-
         val focus = FocusMonitor()
 
         listBtn.addActionListener {
-            val selector = ArdwPortSelector()
-
-            portMdl.values.clear()
-
-            for (descriptor in selector.list()) {
-
-                val list = ArrayList<String>()
-                list.add(descriptor.name)
-                list.add(descriptor.description)
-                list.add(descriptor.systemName)
-
-                if (selector.select(descriptor)) {
-                    list.add("S")
-                } else {
-                    list.add("-")
-                }
-                portMdl.values.add(list)
-            }
+            listPorts()
             table.revalidate()
+            focus.button.requestFocus()
         }
 
         add(JLabel("Current path is " + here.toAbsolutePath()), BorderLayout.NORTH)
@@ -61,9 +45,36 @@ class Panel : JPanel() {
         add(listBtn, BorderLayout.SOUTH)
         add(focus.button, BorderLayout.WEST)
 
-        focus.button.addKeyListener(Listener())
+        focus.button.addKeyListener(Listener {
+            listPorts()
+            table.revalidate()
+            focus.button.requestFocus()
+        })
+
         focus.button.requestFocus()
     }
+
+    private fun listPorts() {
+        val selector = ArdwPortSelector()
+
+        portMdl.values.clear()
+
+        for (descriptor in selector.list()) {
+
+            val list = ArrayList<String>()
+            list.add(descriptor.name)
+            list.add(descriptor.description)
+            list.add(descriptor.systemName)
+
+            if (selector.select(descriptor)) {
+                list.add("S")
+            } else {
+                list.add("-")
+            }
+            portMdl.values.add(list)
+        }
+    }
+
 }
 
 class FocusMonitor : FocusListener {
